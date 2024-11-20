@@ -1,4 +1,6 @@
 class ArtigosController < ApplicationController
+  cache_action :index, expires_in: 5.minutes
+
   def index
     @artigos = Artigo.all
     artigos_json = @artigos.map do |artigo|
@@ -19,6 +21,7 @@ class ArtigosController < ApplicationController
   def show
     begin
       @artigo = Artigo.find(params[:id])
+      cookies[:ultimo_artigo] = {value: @artigo.titulo, expires: 30.minutes.from_now}
       render json: {titulo: @artigo.titulo, texto: @artigo.body}
     rescue ActiveRecord::RecordNotFound
       render json: {msg: 'Artigo Não encontrado'}
@@ -39,6 +42,16 @@ class ArtigosController < ApplicationController
     end
   end
 
+  def destroy
+    begin
+      @artigo = Artigo.find(params[:id])
+      @artigo.destroy
+      render json: {msg: 'Artigo Removido com sucesso'}
+    rescue ActiveRecord::RecordNotFound
+      render json: {msg: 'Artigo não encontrado'}
+    end
+  end
+  private
   def artigo_params
     params.require(:artigo).permit(:titulo, :body, :metadata)
   end
