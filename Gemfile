@@ -4,6 +4,8 @@ source "https://rubygems.org"
 gem "rails", "~> 8.0.0"
 # Use mysql as the database for Active Record
 gem "mysql2", "~> 0.5"
+gem "jwt"
+gem "bcrypt"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
@@ -19,7 +21,8 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
-gem 'actionpack-action_caching'
+gem "actionpack-action_caching"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

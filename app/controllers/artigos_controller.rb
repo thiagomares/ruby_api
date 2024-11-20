@@ -1,8 +1,8 @@
 class ArtigosController < ApplicationController
-
+  before_action :authenticate_user!
   def index
-    # Inserindo a coleta de todos
-    cache_key = 'artigos#index'
+    # Inserindo a coleta de todos os artigos que estão no banco de dados
+    cache_key = "artigos#index"
     artigos_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
       @artigos = Artigo.all
       @artigos.map do |artigo|
@@ -12,8 +12,6 @@ class ArtigosController < ApplicationController
         }
       end
     end
-
-
     render json: artigos_json
   end
 
@@ -26,9 +24,9 @@ class ArtigosController < ApplicationController
   def show
     begin
       @artigo = Artigo.find(params[:id])
-      render json: {titulo: @artigo.titulo, texto: @artigo.body}
+      render json: { titulo: @artigo.titulo, texto: @artigo.body }
     rescue ActiveRecord::RecordNotFound
-      render json: {msg: 'Artigo Não encontrado'}
+      render json: { msg: "Artigo Não encontrado" }
     end
   end
 
@@ -51,9 +49,9 @@ class ArtigosController < ApplicationController
       @artigo = Artigo.find(params[:id])
       @artigo.destroy
       clear_index_cache
-      render json: {msg: 'Artigo Removido com sucesso'}
+      render json: { msg: "Artigo Removido com sucesso" }
     rescue ActiveRecord::RecordNotFound
-      render json: {msg: 'Artigo não encontrado'}
+      render json: { msg: "Artigo não encontrado" }
     end
   end
 
@@ -63,6 +61,6 @@ class ArtigosController < ApplicationController
   end
 
   def clear_index_cache
-    Rails.cache.delete('artigos#index')
+    Rails.cache.delete("artigos#index")
   end
 end
