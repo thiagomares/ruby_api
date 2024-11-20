@@ -1,10 +1,8 @@
 class ArtigosController < ApplicationController
 
-
   def index
+    # Inserindo a coleta de todos
     cache_key = 'artigos#index'
-
-    
     artigos_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
       @artigos = Artigo.all
       @artigos.map do |artigo|
@@ -18,8 +16,6 @@ class ArtigosController < ApplicationController
 
     render json: artigos_json
   end
-
-
 
   def testa_valores
     if 1 == 1
@@ -54,11 +50,13 @@ class ArtigosController < ApplicationController
     begin
       @artigo = Artigo.find(params[:id])
       @artigo.destroy
+      clear_index_cache
       render json: {msg: 'Artigo Removido com sucesso'}
     rescue ActiveRecord::RecordNotFound
       render json: {msg: 'Artigo não encontrado'}
     end
   end
+
   private
   def artigo_params
     params.require(:artigo).permit(:titulo, :body, :metadata)
