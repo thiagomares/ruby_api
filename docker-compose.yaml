@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: projeto_rails
+      MYSQL_USER: projeto_rails
+      MYSQL_PASSWORD: projeto_rails
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    command: ["rails", "server", "-b", "0.0.0.0"]
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mysql2://projeto_rails:projeto_rails@db:3306/projeto_rails
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+
+volumes:
+  db_data:
+  bundle_cache:
