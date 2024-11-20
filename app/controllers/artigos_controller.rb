@@ -4,7 +4,7 @@ class ArtigosController < ApplicationController
   def index
     cache_key = 'artigos#index'
 
-    # Busca no cache; se não encontrar, consulta o banco e armazena no cache.
+    
     artigos_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
       @artigos = Artigo.all
       @artigos.map do |artigo|
@@ -15,7 +15,7 @@ class ArtigosController < ApplicationController
       end
     end
 
-    # Renderiza o JSON (já cacheado ou gerado)
+
     render json: artigos_json
   end
 
